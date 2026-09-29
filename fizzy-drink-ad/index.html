@@ -1,0 +1,538 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bubblr Fizz Ad</title>
+<style>
+  @font-face { font-family: "Luckiest Guy"; src: url(fonts/LuckiestGuy.woff2) format("woff2"); }
+  @font-face { font-family: "Baloo 2"; font-weight: 800; src: url(fonts/Baloo2-ExtraBold.woff2) format("woff2"); }
+  html, body { margin: 0; height: 100%; background: #050b1c; }
+  body { display: grid; place-items: center; }
+  canvas { width: min(100vw, 177.78vh); height: auto; display: block; cursor: pointer; }
+</style>
+</head>
+<body>
+<canvas id="c" width="1920" height="1080"></canvas>
+<script>
+// "Bubblr — Blood Orange Sparkling" : 10 s motion graphic, fully deterministic in t.
+// renderAt(t) draws the frame at time t (seconds); the capture script calls it per frame.
+const W = 1920, H = 1080, DURATION = 10;
+const cv = document.getElementById("c");
+const ctx = cv.getContext("2d");
+
+const DISPLAY = '"Luckiest Guy", "Liberation Sans", sans-serif';
+const BODY = '"Baloo 2", "Liberation Sans", sans-serif';
+const C = {
+  navy: "#0b1b3f", navy2: "#132a63", orange: "#ff7a1a", tangerine: "#ffb13b",
+  yellow: "#ffd23f", pink: "#ff3d7f", berry: "#c8124f", cream: "#fff4e0", ink: "#1a0b2e",
+};
+
+// ---------- math helpers ----------
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const lerp = (a, b, p) => a + (b - a) * p;
+const prog = (t, a, b) => clamp((t - a) / (b - a));
+const easeOutCubic = p => 1 - Math.pow(1 - p, 3);
+const easeInOutCubic = p => p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2;
+const easeOutBack = (p, s = 1.9) => 1 + (s + 1) * Math.pow(p - 1, 3) + s * Math.pow(p - 1, 2);
+const easeOutElastic = p => p === 0 || p === 1 ? p : Math.pow(2, -10 * p) * Math.sin((p * 10 - 0.75) * (2 * Math.PI) / 3) + 1;
+function easeOutBounce(p) {
+  const n = 7.5625, d = 2.75;
+  if (p < 1 / d) return n * p * p;
+  if (p < 2 / d) return n * (p -= 1.5 / d) * p + 0.75;
+  if (p < 2.5 / d) return n * (p -= 2.25 / d) * p + 0.9375;
+  return n * (p -= 2.625 / d) * p + 0.984375;
+}
+function rng(seed) {
+  return () => {
+    seed |= 0; seed = seed + 0x6d2b79f5 | 0;
+    let r = Math.imul(seed ^ seed >>> 15, 1 | seed);
+    r = r + Math.imul(r ^ r >>> 7, 61 | r) ^ r;
+    return ((r ^ r >>> 14) >>> 0) / 4294967296;
+  };
+}
+
+// ---------- precomputed particle sets ----------
+const R = rng(7);
+const bubbles = Array.from({ length: 170 }, () => ({
+  x: R() * W, off: R() * 1400, speed: 120 + R() * 320, r: 4 + Math.pow(R(), 2.2) * 34,
+  wob: 10 + R() * 30, wf: 1 + R() * 3, ph: R() * 6.28, front: R() < 0.3,
+}));
+const spray = Array.from({ length: 110 }, () => ({
+  a: -Math.PI / 2 + (R() - 0.5) * 2.1, v: 500 + R() * 1300, r: 3 + R() * 11, life: 0.7 + R() * 0.8,
+}));
+const droplets = Array.from({ length: 26 }, () => ({ x: (R() - 0.5) * 220, y: -170 + R() * 360, r: 3 + R() * 7 }));
+const slices = Array.from({ length: 7 }, (_, i) => ({
+  ang: i / 7 * Math.PI * 2 + R() * 0.4, dist: 380 + R() * 260, r: 60 + R() * 55,
+  spin: (R() - 0.5) * 5, delay: R() * 0.5,
+}));
+
+// ---------- the can ----------
+const CAN_W = 250, CAN_H = 460, RIM = 24;
+
+function canBodyPath() {
+  ctx.beginPath();
+  ctx.moveTo(-CAN_W / 2, -CAN_H / 2);
+  ctx.lineTo(-CAN_W / 2, CAN_H / 2);
+  ctx.ellipse(0, CAN_H / 2, CAN_W / 2, RIM, 0, Math.PI, 0, true);
+  ctx.lineTo(CAN_W / 2, -CAN_H / 2);
+  ctx.ellipse(0, -CAN_H / 2, CAN_W / 2, RIM, 0, 0, Math.PI, true);
+  ctx.closePath();
+}
+
+// Draws something wrapped on the cylinder at angle th (0 = facing camera).
+function onCylinder(th, y, fn) {
+  const c = Math.cos(th);
+  if (c <= 0.02) return;
+  ctx.save();
+  ctx.translate(Math.sin(th) * CAN_W / 2 * 0.96, y);
+  ctx.scale(c, 1);
+  ctx.globalAlpha *= clamp(c * 2.5);
+  fn();
+  ctx.restore();
+}
+
+function drawCan(cx, cy, s, rot, spin, tabLift, sq = 1) {
+  ctx.save();
+  ctx.translate(cx, cy);
+  ctx.rotate(rot);
+  ctx.scale(s / Math.sqrt(sq), s * sq);
+
+  // drop shadow
+  ctx.save();
+  ctx.shadowColor = "rgba(10,5,30,0.45)"; ctx.shadowBlur = 60; ctx.shadowOffsetY = 30;
+  canBodyPath(); ctx.fillStyle = C.orange; ctx.fill();
+  ctx.restore();
+
+  ctx.save();
+  canBodyPath(); ctx.clip();
+  // label base
+  const base = ctx.createLinearGradient(0, -CAN_H / 2, 0, CAN_H / 2);
+  base.addColorStop(0, "#ff9a2e"); base.addColorStop(0.55, C.orange); base.addColorStop(1, "#ff4f1f");
+  ctx.fillStyle = base; ctx.fillRect(-CAN_W, -CAN_H, CAN_W * 2, CAN_H * 2);
+  // wavy berry band that "rotates" with the can
+  ctx.beginPath();
+  ctx.moveTo(-CAN_W / 2, CAN_H / 2 + 40);
+  for (let x = -CAN_W / 2; x <= CAN_W / 2; x += 5) {
+    const th = Math.asin(clamp(x / (CAN_W / 2), -1, 1));
+    ctx.lineTo(x, 70 + 26 * Math.sin(th * 2.2 + spin * 1.0 + 1));
+  }
+  ctx.lineTo(CAN_W / 2, CAN_H / 2 + 40); ctx.closePath();
+  ctx.fillStyle = C.berry; ctx.fill();
+  ctx.beginPath();
+  for (let x = -CAN_W / 2; x <= CAN_W / 2; x += 5) {
+    const th = Math.asin(clamp(x / (CAN_W / 2), -1, 1));
+    ctx.lineTo(x, 104 + 18 * Math.sin(th * 2.2 + spin * 1.0 + 2.2));
+  }
+  ctx.lineTo(CAN_W / 2, CAN_H); ctx.lineTo(-CAN_W / 2, CAN_H); ctx.closePath();
+  ctx.fillStyle = C.pink; ctx.fill();
+
+  // brand wordmark (front and back)
+  for (const th of [spin, spin + Math.PI]) {
+    onCylinder(Math.atan2(Math.sin(th), Math.cos(th)), -30, () => {
+      ctx.save(); ctx.rotate(-Math.PI / 2);
+      ctx.font = `92px ${DISPLAY}`; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+      ctx.lineWidth = 10; ctx.strokeStyle = C.ink; ctx.lineJoin = "round";
+      ctx.strokeText("BUBBLR", 0, 6); ctx.fillStyle = C.cream; ctx.fillText("BUBBLR", 0, 6);
+      ctx.restore();
+    });
+  }
+  // orange-slice badge on the sides
+  for (const th of [spin + Math.PI / 2, spin - Math.PI / 2]) {
+    onCylinder(Math.atan2(Math.sin(th), Math.cos(th)), -40, () => drawSlice(0, 0, 52, spin));
+  }
+  // small flavour text
+  onCylinder(Math.atan2(Math.sin(spin), Math.cos(spin)), 170, () => {
+    ctx.font = `800 26px ${BODY}`; ctx.textAlign = "center"; ctx.fillStyle = C.cream;
+    ctx.fillText("BLOOD ORANGE", 0, 0);
+  });
+
+  // metal bands top/bottom
+  const metal = ctx.createLinearGradient(-CAN_W / 2, 0, CAN_W / 2, 0);
+  metal.addColorStop(0, "#6d7486"); metal.addColorStop(0.3, "#f4f6fb"); metal.addColorStop(0.55, "#aab1c2"); metal.addColorStop(1, "#4d5466");
+  ctx.fillStyle = metal;
+  ctx.fillRect(-CAN_W, -CAN_H / 2 - RIM, CAN_W * 2, 46);
+  ctx.beginPath(); ctx.ellipse(0, CAN_H / 2 - 18, CAN_W / 2 + 2, RIM, 0, 0, Math.PI * 2); ctx.rect(-CAN_W, CAN_H / 2 - 18, CAN_W * 2, 60); ctx.fill();
+
+  // cylindrical shading
+  const sh = ctx.createLinearGradient(-CAN_W / 2, 0, CAN_W / 2, 0);
+  sh.addColorStop(0, "rgba(20,0,30,0.55)"); sh.addColorStop(0.18, "rgba(20,0,30,0.05)");
+  sh.addColorStop(0.3, "rgba(255,255,255,0.45)"); sh.addColorStop(0.38, "rgba(255,255,255,0.0)");
+  sh.addColorStop(0.75, "rgba(20,0,30,0.12)"); sh.addColorStop(1, "rgba(20,0,30,0.6)");
+  ctx.fillStyle = sh; ctx.fillRect(-CAN_W, -CAN_H, CAN_W * 2, CAN_H * 2);
+  // condensation
+  for (const d of droplets) {
+    ctx.fillStyle = "rgba(255,255,255,0.35)";
+    ctx.beginPath(); ctx.ellipse(d.x, d.y, d.r * 0.75, d.r, 0, 0, 7); ctx.fill();
+    ctx.fillStyle = "rgba(255,255,255,0.8)";
+    ctx.beginPath(); ctx.arc(d.x - d.r * 0.25, d.y - d.r * 0.35, d.r * 0.25, 0, 7); ctx.fill();
+  }
+  ctx.restore();
+
+  // lid
+  const lid = ctx.createLinearGradient(-CAN_W / 2, 0, CAN_W / 2, 0);
+  lid.addColorStop(0, "#8a91a3"); lid.addColorStop(0.35, "#ffffff"); lid.addColorStop(1, "#6b7284");
+  ctx.fillStyle = lid;
+  ctx.beginPath(); ctx.ellipse(0, -CAN_H / 2, CAN_W / 2, RIM, 0, 0, 7); ctx.fill();
+  ctx.fillStyle = "#b9bfcc";
+  ctx.beginPath(); ctx.ellipse(0, -CAN_H / 2 + 2, CAN_W / 2 - 14, RIM - 7, 0, 0, 7); ctx.fill();
+  // opening appears once popped
+  if (tabLift > 0) {
+    ctx.fillStyle = `rgba(30,10,20,${clamp(tabLift * 2)})`;
+    ctx.beginPath(); ctx.ellipse(-8, -CAN_H / 2 - 2, 30, 9, 0, 0, 7); ctx.fill();
+  }
+  // pull tab
+  ctx.save();
+  ctx.translate(18, -CAN_H / 2 + 2);
+  ctx.scale(1, 1 - 1.6 * tabLift);
+  ctx.fillStyle = "#dfe3ec"; ctx.strokeStyle = "#7c8395"; ctx.lineWidth = 3;
+  ctx.beginPath(); ctx.roundRect(-34, -10, 68, 20, 10); ctx.fill(); ctx.stroke();
+  ctx.fillStyle = "#9aa1b2"; ctx.beginPath(); ctx.ellipse(8, 0, 11, 5, 0, 0, 7); ctx.fill();
+  ctx.restore();
+
+  ctx.restore();
+}
+
+function drawSlice(x, y, r, rot) {
+  ctx.save(); ctx.translate(x, y); ctx.rotate(rot);
+  ctx.fillStyle = "#ff8c1a"; ctx.beginPath(); ctx.arc(0, 0, r, 0, 7); ctx.fill();
+  ctx.fillStyle = "#fff1d6"; ctx.beginPath(); ctx.arc(0, 0, r * 0.86, 0, 7); ctx.fill();
+  const segs = 9;
+  for (let i = 0; i < segs; i++) {
+    const a0 = i / segs * Math.PI * 2, a1 = (i + 1) / segs * Math.PI * 2, g = 0.06;
+    ctx.fillStyle = i % 2 ? "#e8264f" : "#f2394f";
+    ctx.beginPath(); ctx.moveTo(Math.cos((a0 + a1) / 2) * r * 0.1, Math.sin((a0 + a1) / 2) * r * 0.1);
+    ctx.arc(0, 0, r * 0.78, a0 + g, a1 - g); ctx.closePath(); ctx.fill();
+  }
+  ctx.fillStyle = "rgba(255,255,255,0.35)";
+  ctx.beginPath(); ctx.arc(-r * 0.3, -r * 0.3, r * 0.18, 0, 7); ctx.fill();
+  ctx.restore();
+}
+
+function drawBubble(x, y, r, a) {
+  ctx.globalAlpha = a;
+  ctx.fillStyle = "rgba(255,255,255,0.14)"; ctx.strokeStyle = "rgba(255,255,255,0.85)";
+  ctx.lineWidth = Math.max(1.5, r * 0.12);
+  ctx.beginPath(); ctx.arc(x, y, r, 0, 7); ctx.fill(); ctx.stroke();
+  ctx.fillStyle = "rgba(255,255,255,0.9)";
+  ctx.beginPath(); ctx.arc(x - r * 0.38, y - r * 0.38, r * 0.2, 0, 7); ctx.fill();
+  ctx.globalAlpha = 1;
+}
+
+function drawBubbles(t, front) {
+  const energy = t < 2 ? 0.35 + 0.25 * prog(t, 0.9, 2) : 1;
+  const speedK = t < 2 ? 0.6 : 1 + 0.8 * Math.max(0, 1 - (t - 2) * 1.5) + (t > 5.6 && t < 7.6 ? 0.7 : 0);
+  for (const b of bubbles) {
+    if (b.front !== front) continue;
+    const travel = (b.off + b.speed * t * speedK) % (H + 200);
+    const y = H + 100 - travel;
+    const x = b.x + Math.sin(t * b.wf + b.ph) * b.wob;
+    drawBubble(x, y, b.r * (front ? 1.2 : 1), energy * (front ? 0.9 : 0.55));
+  }
+}
+
+// kinetic "slam" word with a skewed highlight box
+function slamWord(t, t0, text, x, y, size, fg, bg, tilt) {
+  const p = prog(t, t0, t0 + 0.4);
+  if (p <= 0) return;
+  const s = lerp(2.6, 1, easeOutBack(p, 2.4));
+  ctx.save();
+  ctx.translate(x, y); ctx.rotate(tilt); ctx.scale(s, s);
+  ctx.globalAlpha = clamp(p * 3);
+  ctx.font = `${size}px ${DISPLAY}`; ctx.textBaseline = "middle";
+  const w = ctx.measureText(text).width;
+  const bp = easeOutCubic(prog(t, t0 + 0.1, t0 + 0.45));
+  ctx.fillStyle = bg;
+  ctx.beginPath(); ctx.moveTo(-24, -size * 0.62); ctx.lineTo(-24 + (w + 70) * bp, -size * 0.62);
+  ctx.lineTo(-44 + (w + 70) * bp, size * 0.56); ctx.lineTo(-44, size * 0.56); ctx.closePath(); ctx.fill();
+  ctx.lineJoin = "round"; ctx.lineWidth = size * 0.12; ctx.strokeStyle = C.ink;
+  ctx.strokeText(text, 0, size * 0.06);
+  ctx.fillStyle = fg; ctx.fillText(text, 0, size * 0.06);
+  ctx.restore();
+}
+
+function starBurst(x, y, r1, r2, n, rot, fill) {
+  ctx.save(); ctx.translate(x, y); ctx.rotate(rot);
+  ctx.beginPath();
+  for (let i = 0; i < n * 2; i++) {
+    const r = i % 2 ? r2 : r1, a = i / (n * 2) * Math.PI * 2;
+    ctx.lineTo(Math.cos(a) * r, Math.sin(a) * r);
+  }
+  ctx.closePath(); ctx.fillStyle = fill; ctx.fill();
+  ctx.lineWidth = 10; ctx.strokeStyle = C.ink; ctx.lineJoin = "round"; ctx.stroke();
+  ctx.restore();
+}
+
+// ---------- can choreography ----------
+function canState(t) {
+  let cx = W / 2, cy = H / 2 + 50, s = 1, rot = 0, spin = 0, sq = 1;
+  if (t < 0.95) {
+    const p = prog(t, 0, 0.95);
+    cy = lerp(-420, H / 2 + 50, easeOutBounce(p));
+    // squash on each bounce contact
+    const contacts = [0.364, 0.727, 0.909];
+    for (const c of contacts) sq *= 1 - 0.14 * Math.max(0, 1 - Math.abs(p - c) * 18) * (c === 0.364 ? 1 : 0.5);
+    rot = -0.08 * (1 - p);
+  } else if (t < 2.0) {
+    const k = prog(t, 0.95, 2.0);
+    rot = Math.sin(t * 55) * 0.07 * k * k;
+    cx += Math.sin(t * 73) * 10 * k * k;
+    sq = 1 - 0.05 * k;
+  } else if (t < 2.6) {
+    const p = prog(t, 2.0, 2.6);
+    s = 1 + 0.18 * Math.sin(p * Math.PI) * (1 - p);
+    sq = 1 + 0.08 * (1 - easeOutElastic(p));
+  }
+  if (t >= 2.6) {
+    const m = easeInOutCubic(prog(t, 2.6, 3.2));
+    cx = lerp(W / 2, W * 0.27, m); rot = lerp(0, -0.12, m);
+    cy += Math.sin((t - 2.6) * 2.4) * 14 * m;
+    spin = (t - 2.6) * 1.5;
+  }
+  if (t >= 5.6) {
+    const m = easeInOutCubic(prog(t, 5.6, 6.4));
+    cx = lerp(cx, W / 2, m); rot = lerp(rot, 0.05 * Math.sin(t * 3), m);
+    s = lerp(1, 1.12, m);
+    spin = (t - 2.6) * 1.5 + easeInOutCubic(prog(t, 5.6, 7.4)) * Math.PI * 2;
+  }
+  if (t >= 7.4) {
+    const m = easeInOutCubic(prog(t, 7.4, 8.0));
+    cx = lerp(W / 2, W * 0.27, m); s = lerp(1.12, 1.08, m);
+    rot = lerp(0.05 * Math.sin(t * 3), -0.1, m);
+    cy = H / 2 + 50 + Math.sin((t - 7.4) * 2.2) * 12;
+  }
+  const tabLift = easeOutBack(prog(t, 1.98, 2.12), 3);
+  return { cx, cy, s: s * 1.2, rot, spin, sq, tabLift };
+}
+
+// ---------- frame ----------
+function renderAt(t) {
+  t = clamp(t, 0, DURATION - 1e-6);
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.globalAlpha = 1;
+
+  // camera shake at the pop
+  const shake = Math.max(0, 1 - (t - 2.0) / 0.45) * (t >= 2.0 ? 1 : 0);
+  ctx.translate(Math.sin(t * 91) * 18 * shake, Math.cos(t * 77) * 14 * shake);
+
+  // background: night-blue → tangerine reveal
+  const bg = ctx.createRadialGradient(W / 2, H * 0.45, 50, W / 2, H / 2, W * 0.7);
+  bg.addColorStop(0, C.navy2); bg.addColorStop(1, "#050b1c");
+  ctx.fillStyle = bg; ctx.fillRect(-50, -50, W + 100, H + 100);
+
+  const cs = canState(t);
+  const lidX = cs.cx, lidY = cs.cy - CAN_H / 2 * cs.s;
+
+  const reveal = easeOutCubic(prog(t, 2.0, 2.75));
+  if (reveal > 0) {
+    ctx.save();
+    ctx.beginPath(); ctx.arc(W / 2, H / 2 - 180, reveal * 2300, 0, 7); ctx.clip();
+    const og = ctx.createRadialGradient(W * 0.45, H * 0.4, 80, W / 2, H / 2, W * 0.75);
+    og.addColorStop(0, C.yellow); og.addColorStop(0.45, C.tangerine); og.addColorStop(1, "#ff5a1a");
+    ctx.fillStyle = og; ctx.fillRect(-50, -50, W + 100, H + 100);
+    // rotating sunburst rays
+    ctx.translate(W * 0.3, H * 0.5); ctx.rotate(t * 0.25);
+    ctx.fillStyle = "rgba(255,255,255,0.13)";
+    for (let i = 0; i < 16; i++) {
+      ctx.rotate(Math.PI * 2 / 16);
+      ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(2400, -170); ctx.lineTo(2400, 170); ctx.closePath(); ctx.fill();
+    }
+    ctx.restore();
+  }
+
+  drawBubbles(t, false);
+
+  // shockwave rings
+  for (const [d, col] of [[0, "rgba(255,255,255,0.9)"], [0.1, "rgba(255,210,63,0.9)"]]) {
+    const p = prog(t, 2.0 + d, 2.6 + d);
+    if (p > 0 && p < 1) {
+      ctx.strokeStyle = col; ctx.lineWidth = 26 * (1 - p);
+      ctx.beginPath(); ctx.arc(lidX, lidY, easeOutCubic(p) * 900, 0, 7); ctx.stroke();
+    }
+  }
+
+  // kinetic words
+  if (t > 2.8 && t < 7.2) {
+    const out = easeInOutCubic(prog(t, 5.5, 6.0));
+    ctx.save(); ctx.translate(out * 1300, 0);
+    slamWord(t, 2.9, "ICE COLD.", W * 0.49, H * 0.28, 150, C.cream, C.navy, -0.05);
+    slamWord(t, 3.65, "ZERO SUGAR.", W * 0.5, H * 0.5, 150, C.yellow, C.berry, 0.03);
+    slamWord(t, 4.4, "100% FIZZ.", W * 0.49, H * 0.72, 150, C.cream, C.pink, -0.04);
+    ctx.restore();
+  }
+
+  // soda wave rising to fill the screen
+  const level = lerp(H + 120, -220, easeInOutCubic(prog(t, 5.5, 7.3)));
+  if (level < H + 110) {
+    for (const [off, col, amp] of [[-40, "#ff6b8e", 1.3], [0, C.berry, 1]]) {
+      ctx.beginPath(); ctx.moveTo(-50, H + 60);
+      for (let x = -50; x <= W + 50; x += 20) {
+        const y = level + off + amp * (36 * Math.sin(x * 0.005 + t * 5 + off) + 16 * Math.sin(x * 0.013 - t * 3.3));
+        ctx.lineTo(x, y);
+      }
+      ctx.lineTo(W + 50, H + 60); ctx.closePath();
+      if (off === 0) {
+        const wg = ctx.createLinearGradient(0, level, 0, level + H);
+        wg.addColorStop(0, "#ff2d6a"); wg.addColorStop(1, "#8f0b3f");
+        ctx.fillStyle = wg;
+      } else ctx.fillStyle = col;
+      ctx.fill();
+    }
+  }
+
+  // marquee text riding the soda
+  if (t > 5.9 && t < 8.0) {
+    const a = prog(t, 5.9, 6.3) * (1 - prog(t, 7.4, 7.9));
+    ctx.save(); ctx.globalAlpha = a;
+    ctx.font = `260px ${DISPLAY}`; ctx.textBaseline = "middle";
+    ctx.lineWidth = 8; ctx.strokeStyle = "rgba(255,244,224,0.9)";
+    const shift = (t - 5.9) * 520;
+    for (const [row, dir] of [[H * 0.3, -1], [H * 0.72, 1]]) {
+      const x0 = dir < 0 ? W * 0.1 - shift : -W * 0.9 + shift;
+      ctx.strokeText("CITRUS BURST • CITRUS BURST • ", x0, row);
+    }
+    ctx.restore();
+  }
+
+  // flying blood-orange slices
+  if (t > 5.7) {
+    for (const sl of slices) {
+      const p = prog(t, 5.7 + sl.delay, 6.6 + sl.delay);
+      const settle = easeOutBack(p, 1.4);
+      const drift = Math.max(0, t - 6.6 - sl.delay) * 30;
+      const ex = t > 7.4 ? easeInOutCubic(prog(t, 7.4, 8.2)) : 0;
+      const d = lerp(1500, sl.dist + drift, settle) + ex * 900;
+      const x = W / 2 + Math.cos(sl.ang) * d * 1.3, y = H / 2 + Math.sin(sl.ang) * d * 0.8;
+      drawSlice(x, y, sl.r, sl.spin * t);
+    }
+  }
+
+  drawCan(cs.cx, cs.cy, cs.s, cs.rot, cs.spin, cs.tabLift, cs.sq);
+
+  // pop spray
+  const tp = t - 2.0;
+  if (tp > 0 && tp < 1.6) {
+    for (const d of spray) {
+      if (tp > d.life) continue;
+      const x = lidX + Math.cos(d.a) * d.v * tp;
+      const y = lidY + Math.sin(d.a) * d.v * tp + 0.5 * 1800 * tp * tp;
+      ctx.globalAlpha = 1 - tp / d.life;
+      ctx.fillStyle = d.r > 8 ? C.cream : "#ffffff";
+      ctx.beginPath(); ctx.arc(x, y, d.r, 0, 7); ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+  }
+
+  // anticipation lines while shaking
+  if (t > 1.2 && t < 2.0) {
+    const k = prog(t, 1.2, 2.0);
+    ctx.strokeStyle = `rgba(255,210,63,${0.8 * k})`; ctx.lineWidth = 8; ctx.lineCap = "round";
+    for (let i = 0; i < 6; i++) {
+      const a = -Math.PI / 2 + (i - 2.5) * 0.35, j = Math.sin(t * 40 + i) * 8;
+      ctx.beginPath();
+      ctx.moveTo(lidX + Math.cos(a) * (150 + j), lidY + Math.sin(a) * (150 + j));
+      ctx.lineTo(lidX + Math.cos(a) * (190 + 40 * k + j), lidY + Math.sin(a) * (190 + 40 * k + j));
+      ctx.stroke();
+    }
+  }
+
+  // "PSSST!" / "POP!" callouts
+  if (t > 2.0 && t < 2.9) {
+    const p = prog(t, 2.0, 2.25), o = 1 - prog(t, 2.65, 2.9);
+    const s = easeOutBack(p, 3) * o;
+    ctx.save(); ctx.translate(lidX + 260, lidY - 80); ctx.scale(s, s); ctx.rotate(0.15);
+    starBurst(0, 0, 190, 130, 12, t * 0.8, C.yellow);
+    ctx.font = `130px ${DISPLAY}`; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+    ctx.lineWidth = 14; ctx.strokeStyle = C.ink; ctx.lineJoin = "round";
+    ctx.strokeText("POP!", 0, 10); ctx.fillStyle = C.pink; ctx.fillText("POP!", 0, 10);
+    ctx.restore();
+  }
+
+  // intro teaser text
+  if (t < 2.0) {
+    const a = prog(t, 0.6, 1.0) * (1 - prog(t, 1.8, 2.0));
+    ctx.save(); ctx.globalAlpha = a;
+    ctx.font = `800 54px ${BODY}`; ctx.textAlign = "center"; ctx.fillStyle = C.cream;
+    ctx.letterSpacing = "14px";
+    ctx.fillText("SOMETHING'S ABOUT TO BUBBLE UP…", W / 2 + 7, H - 70);
+    ctx.restore();
+  }
+
+  drawBubbles(t, true);
+
+  // end card
+  if (t > 7.7) {
+    const lx = W * 0.66, ly = H * 0.44;
+    // flavour kicker
+    const kp = easeOutCubic(prog(t, 8.1, 8.5));
+    ctx.save(); ctx.globalAlpha = kp;
+    ctx.font = `800 44px ${BODY}`; ctx.textAlign = "center"; ctx.fillStyle = C.yellow;
+    ctx.letterSpacing = "10px";
+    ctx.fillText("BLOOD ORANGE · SPARKLING", lx + 5, ly - 170 + (1 - kp) * 30);
+    ctx.restore();
+    // logo letters drop in one by one
+    ctx.font = `250px ${DISPLAY}`; ctx.textBaseline = "alphabetic";
+    const word = "BUBBLR", widths = [...word].map(ch => ctx.measureText(ch).width);
+    const total = widths.reduce((a, b) => a + b, 0);
+    let x = lx - total / 2;
+    [...word].forEach((ch, i) => {
+      const t0 = 7.75 + i * 0.09, p = prog(t, t0, t0 + 0.5);
+      if (p > 0) {
+        const y = ly + 70 - (1 - easeOutBounce(p)) * 500 + Math.sin((t - t0) * 4 + i) * 6 * p;
+        ctx.save(); ctx.translate(x + widths[i] / 2, y); ctx.rotate(Math.sin(t * 3 + i * 1.3) * 0.04);
+        ctx.textAlign = "center"; ctx.lineJoin = "round";
+        ctx.fillStyle = C.ink; ctx.fillText(ch, 10, 14);
+        ctx.lineWidth = 16; ctx.strokeStyle = C.ink; ctx.strokeText(ch, 0, 0);
+        ctx.fillStyle = i % 2 ? C.yellow : C.cream; ctx.fillText(ch, 0, 0);
+        ctx.restore();
+      }
+      x += widths[i];
+    });
+    // tagline
+    const tp2 = easeOutCubic(prog(t, 8.55, 9.0));
+    ctx.save(); ctx.globalAlpha = tp2;
+    ctx.font = `800 72px ${BODY}`; ctx.textAlign = "center"; ctx.fillStyle = C.cream;
+    ctx.fillText("Taste the fizz.", lx, ly + 170 + (1 - tp2) * 40);
+    ctx.restore();
+    // CTA pill
+    const cp = prog(t, 8.95, 9.35);
+    if (cp > 0) {
+      const s = easeOutBack(cp, 2.5) * (1 + 0.035 * Math.sin((t - 9.35) * 9) * (t > 9.35 ? 1 : 0));
+      ctx.save(); ctx.translate(lx, ly + 290); ctx.scale(s, s);
+      ctx.fillStyle = C.ink; ctx.beginPath(); ctx.roundRect(-258, -46, 530, 104, 52); ctx.fill();
+      ctx.fillStyle = C.yellow; ctx.beginPath(); ctx.roundRect(-265, -56, 530, 104, 52); ctx.fill();
+      ctx.lineWidth = 6; ctx.strokeStyle = C.ink; ctx.stroke();
+      ctx.font = `800 50px ${BODY}`; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+      ctx.fillStyle = C.ink; ctx.letterSpacing = "4px"; ctx.fillText("NOW IN STORES", 2, 0);
+      ctx.restore();
+    }
+  }
+
+  // white flash at the pop
+  const flash = t >= 2.0 ? Math.max(0, 1 - (t - 2.0) / 0.22) : 0;
+  if (flash > 0) { ctx.fillStyle = `rgba(255,255,255,${0.85 * flash})`; ctx.fillRect(-50, -50, W + 100, H + 100); }
+
+  // vignette + fade in/out
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  const vg = ctx.createRadialGradient(W / 2, H / 2, H * 0.45, W / 2, H / 2, W * 0.72);
+  vg.addColorStop(0, "rgba(0,0,0,0)"); vg.addColorStop(1, "rgba(10,0,25,0.45)");
+  ctx.fillStyle = vg; ctx.fillRect(0, 0, W, H);
+  const fade = Math.max(1 - prog(t, 0, 0.25), prog(t, 9.75, 10));
+  if (fade > 0) { ctx.fillStyle = `rgba(5,11,28,${fade})`; ctx.fillRect(0, 0, W, H); }
+}
+
+window.renderAt = renderAt;
+window.ready = document.fonts.load(`100px ${DISPLAY}`).then(() => document.fonts.load(`800 50px ${BODY}`));
+
+// Live preview (loops); the capture script passes ?capture to drive frames itself.
+if (!location.search.includes("capture")) {
+  let start = performance.now();
+  cv.addEventListener("click", () => { start = performance.now(); });
+  window.ready.then(() => {
+    const loop = now => { renderAt(((now - start) / 1000) % DURATION); requestAnimationFrame(loop); };
+    requestAnimationFrame(loop);
+  });
+}
+</script>
+</body>
+</html>

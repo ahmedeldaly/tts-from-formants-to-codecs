@@ -1,0 +1,13 @@
+{
+  "name": "bubblr-fizz-ad",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "audio": "node audio.mjs",
+    "render": "node audio.mjs && node render.mjs"
+  },
+  "devDependencies": {
+    "ffmpeg-static": "^5.2.0",
+    "playwright-core": "^1.56.0"
+  }
+}
