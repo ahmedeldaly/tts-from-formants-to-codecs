@@ -1,0 +1,711 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Ahmed CTO</title>
+<style>
+  @font-face { font-family: Poppins; font-weight: 500; src: url(fonts/poppins-latin-500-normal.woff2); }
+  @font-face { font-family: Poppins; font-weight: 700; src: url(fonts/poppins-latin-700-normal.woff2); }
+  @font-face { font-family: Poppins; font-weight: 800; src: url(fonts/poppins-latin-800-normal.woff2); }
+  html, body { margin: 0; padding: 0; background: #0b1630; overflow: hidden; }
+  svg { display: block; font-family: Poppins, sans-serif; }
+  text { font-family: Poppins, sans-serif; }
+</style>
+</head>
+<body>
+<svg id="stage" xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080">
+  <defs>
+    <linearGradient id="bg1" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0d1f45"/><stop offset="1" stop-color="#091329"/>
+    </linearGradient>
+    <linearGradient id="bg2" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#10306b"/><stop offset="1" stop-color="#0a1633"/>
+    </linearGradient>
+    <linearGradient id="bg3" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ff8a5c"/><stop offset="1" stop-color="#e2456b"/>
+    </linearGradient>
+    <linearGradient id="bg4" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#eefbd9"/><stop offset="1" stop-color="#c9ef9f"/>
+    </linearGradient>
+    <linearGradient id="jacket" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1f2a44"/><stop offset="1" stop-color="#141c30"/>
+    </linearGradient>
+    <linearGradient id="bowlG" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#d9e6ee"/>
+    </linearGradient>
+    <pattern id="pinstripe" width="14" height="14" patternUnits="userSpaceOnUse">
+      <rect width="14" height="14" fill="none"/>
+      <line x1="7" y1="0" x2="7" y2="14" stroke="#2c3a5c" stroke-width="1.4" opacity="0.55"/>
+    </pattern>
+    <pattern id="tieStripe" width="24" height="24" patternUnits="userSpaceOnUse" patternTransform="rotate(-40)">
+      <rect width="24" height="24" fill="#c5d3ea"/>
+      <rect y="0" width="24" height="5" fill="#4f6fb0"/>
+      <rect y="9" width="24" height="3" fill="#8a93a6"/>
+      <rect y="15" width="24" height="4" fill="#eef3fb"/>
+    </pattern>
+    <clipPath id="faceClip">
+      <path d="M190 250 C188 170 230 128 300 126 C370 128 412 170 410 250 C410 322 392 370 356 398 C336 413 318 420 300 420 C282 420 264 413 244 398 C208 370 190 322 190 250 Z"/>
+    </clipPath>
+    <clipPath id="mouthClip"><path id="mouthClipPath" d=""/></clipPath>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="14" stdDeviation="16" flood-color="#000" flood-opacity="0.28"/>
+    </filter>
+    <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#000" flood-opacity="0.2"/>
+    </filter>
+    <symbol id="heart" viewBox="-50 -45 100 90">
+      <path d="M0 40 C-40 12 -50 -8 -44 -24 C-36 -44 -10 -44 0 -24 C10 -44 36 -44 44 -24 C50 -8 40 12 0 40 Z"/>
+    </symbol>
+    <symbol id="logoMark" viewBox="0 0 120 120">
+      <!-- Mara7el ("stages"): a path through three milestones -->
+      <path d="M18 92 C40 92 40 60 60 60 C80 60 80 28 102 28" fill="none" stroke="currentColor" stroke-width="12" stroke-linecap="round"/>
+      <circle cx="18" cy="92" r="13" fill="currentColor"/>
+      <circle cx="60" cy="60" r="13" fill="currentColor"/>
+      <circle cx="102" cy="28" r="15" fill="#8bd346"/>
+    </symbol>
+  </defs>
+
+  <!-- ============ BACKGROUNDS ============ -->
+  <g id="bgS1">
+    <rect width="1920" height="1080" fill="url(#bg1)"/>
+    <g id="dots1" opacity="0.18"></g>
+    <circle id="s1circle" cx="1450" cy="520" r="360" fill="#19c3a6"/>
+    <circle id="s1ring" cx="1450" cy="520" r="430" fill="none" stroke="#19c3a6" stroke-width="4" stroke-dasharray="18 22" opacity="0.6"/>
+    <circle id="s1ring2" cx="1450" cy="520" r="500" fill="none" stroke="#ffffff" stroke-width="2" stroke-dasharray="4 16" opacity="0.25"/>
+  </g>
+  <g id="bgS2">
+    <rect width="1920" height="1080" fill="url(#bg2)"/>
+    <g id="grid2" opacity="0.12" stroke="#7fb3ff" stroke-width="1.5"></g>
+    <circle cx="960" cy="560" r="330" fill="#1b4fa8" opacity="0.55"/>
+    <circle id="s2pulse" cx="960" cy="560" r="330" fill="none" stroke="#19c3a6" stroke-width="5"/>
+    <g id="rocket">
+      <path id="rocketTrail" d="" fill="none" stroke="#ffc857" stroke-width="10" stroke-linecap="round" opacity="0.7" stroke-dasharray="2 18"/>
+      <g id="rocketBody">
+        <path d="M0 -60 C22 -40 26 -5 20 30 L-20 30 C-26 -5 -22 -40 0 -60 Z" fill="#f4f7fb"/>
+        <circle cx="0" cy="-12" r="11" fill="#19c3a6" stroke="#0d1f45" stroke-width="4"/>
+        <path d="M-20 12 L-38 40 L-18 32 Z M20 12 L38 40 L18 32 Z" fill="#ff6b6b"/>
+        <path id="flame" d="M-12 32 Q0 80 12 32 Z" fill="#ffc857"/>
+      </g>
+    </g>
+  </g>
+  <g id="bgS3">
+    <rect width="1920" height="1080" fill="url(#bg3)"/>
+    <g id="rays3" opacity="0.13" fill="#fff"></g>
+    <path id="chartLine" d="M140 900 L420 780 L640 830 L900 620 L1150 660 L1420 420 L1780 180" fill="none" stroke="#ffffff" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/>
+    <path id="chartArrow" d="M-40 -26 L0 0 L-40 26" fill="none" stroke="#ffffff" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/>
+  </g>
+  <g id="bgS4">
+    <rect width="1920" height="1080" fill="url(#bg4)"/>
+    <circle cx="960" cy="520" r="400" fill="#b4e67a" opacity="0.7"/>
+    <circle id="s4ring" cx="960" cy="520" r="470" fill="none" stroke="#6fbf3a" stroke-width="5" stroke-dasharray="20 20" opacity="0.6"/>
+    <g id="leaves4"></g>
+  </g>
+  <g id="bgS5">
+    <rect width="1920" height="1080" fill="url(#bg1)"/>
+    <g id="dots5" opacity="0.18"></g>
+    <circle id="s5circle" cx="1450" cy="520" r="360" fill="#8bd346"/>
+    <circle id="s5ring" cx="1450" cy="520" r="430" fill="none" stroke="#8bd346" stroke-width="4" stroke-dasharray="18 22" opacity="0.6"/>
+  </g>
+
+  <!-- ============ PROPS BEHIND CHARACTER ============ -->
+  <g id="propsS2">
+    <g id="codeCard" filter="url(#shadow)">
+      <rect x="0" y="0" width="470" height="300" rx="22" fill="#0f1a33" stroke="#2c4a86" stroke-width="3"/>
+      <rect x="0" y="0" width="470" height="48" rx="22" fill="#18284d"/>
+      <rect x="0" y="26" width="470" height="22" fill="#18284d"/>
+      <circle cx="30" cy="24" r="8" fill="#ff6b6b"/><circle cx="56" cy="24" r="8" fill="#ffc857"/><circle cx="82" cy="24" r="8" fill="#8bd346"/>
+      <text x="440" y="32" text-anchor="end" font-size="18" font-weight="500" fill="#7f95c4">deploy.ts</text>
+      <g id="codeLines"></g>
+    </g>
+    <g id="cloudCard" filter="url(#shadow)">
+      <rect x="0" y="0" width="330" height="250" rx="26" fill="#ffffff"/>
+      <path d="M85 165 C55 165 45 135 65 118 C60 90 95 75 115 92 C125 62 175 55 192 88 C225 80 250 110 238 135 C262 142 258 165 235 165 Z" fill="#dff3ff" stroke="#2f7de1" stroke-width="7" stroke-linejoin="round"/>
+      <g id="cloudArrow"><path d="M150 150 L150 105 M132 122 L150 104 L168 122" fill="none" stroke="#19c3a6" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/></g>
+      <text x="165" y="218" text-anchor="middle" font-size="26" font-weight="700" fill="#0d1f45">Cloud</text>
+    </g>
+    <g id="dashCard" filter="url(#shadow)">
+      <rect x="0" y="0" width="360" height="270" rx="26" fill="#ffffff"/>
+      <text x="28" y="48" font-size="24" font-weight="700" fill="#0d1f45">Growth</text>
+      <text id="kpi" x="332" y="50" text-anchor="end" font-size="26" font-weight="800" fill="#19c3a6">+0%</text>
+      <g id="bars"></g>
+    </g>
+    <g id="gear">
+      <path id="gearPath" d="" fill="#19c3a6" opacity="0.9"/>
+      <circle r="22" fill="#10306b"/>
+    </g>
+  </g>
+  <g id="propsS3">
+    <g id="hearts3"></g>
+  </g>
+
+  <!-- ============ CHARACTER: AHMED ============ -->
+  <g id="char">
+    <!-- torso -->
+    <g id="torso">
+      <path d="M264 380 L336 380 L340 450 L260 450 Z" fill="#c38660"/>
+      <path d="M264 395 C285 418 315 418 336 395 L338 430 L262 430 Z" fill="#a86d4b" opacity="0.6"/>
+      <g transform="translate(0 -24)">
+      <path d="M50 870 C50 620 80 520 255 462 L300 560 L345 462 C520 520 550 620 550 870 Z" fill="url(#jacket)"/>
+      <path d="M50 870 C50 620 80 520 255 462 L300 560 L345 462 C520 520 550 620 550 870 Z" fill="url(#pinstripe)"/>
+      <!-- shirt -->
+      <path d="M255 455 L300 470 L345 455 L336 540 L300 640 L264 540 Z" fill="#f7f8fb"/>
+      <!-- collar -->
+      <path d="M255 452 L300 478 L276 512 L250 470 Z" fill="#ffffff" stroke="#d4d9e2" stroke-width="2"/>
+      <path d="M345 452 L300 478 L324 512 L350 470 Z" fill="#ffffff" stroke="#d4d9e2" stroke-width="2"/>
+      <!-- tie -->
+      <path d="M286 478 L314 478 L318 505 L300 515 L282 505 Z" fill="url(#tieStripe)" stroke="#6b7fa8" stroke-width="1.5"/>
+      <path d="M284 512 L316 512 L330 700 L300 735 L270 700 Z" fill="url(#tieStripe)" stroke="#6b7fa8" stroke-width="1.5"/>
+      <!-- lapels -->
+      <path d="M255 462 L300 560 L300 640 L236 560 L262 540 L225 515 Z" fill="#18213a"/>
+      <path d="M345 462 L300 560 L300 640 L364 560 L338 540 L375 515 Z" fill="#18213a"/>
+      <path d="M300 560 L300 870" stroke="#0e1426" stroke-width="3"/>
+      <path d="M300 640 L300 840 L300 640 Z" fill="#141c30"/>
+      <path d="M255 462 L300 560 L236 560 L262 540 L225 515 Z" fill="none" stroke="#2c3a5c" stroke-width="2"/>
+      <path d="M345 462 L300 560 L364 560 L338 540 L375 515 Z" fill="none" stroke="#2c3a5c" stroke-width="2"/>
+      <circle cx="316" cy="700" r="7" fill="#0e1426"/>
+      <path d="M400 650 L452 646" stroke="#2c3a5c" stroke-width="4" stroke-linecap="round"/>
+      </g>
+    </g>
+
+    <!-- head -->
+    <g id="head">
+      <!-- ears -->
+      <ellipse cx="190" cy="272" rx="20" ry="34" fill="#c38660"/>
+      <ellipse cx="410" cy="272" rx="20" ry="34" fill="#c38660"/>
+      <ellipse cx="192" cy="272" rx="9" ry="18" fill="#a86d4b"/>
+      <ellipse cx="408" cy="272" rx="9" ry="18" fill="#a86d4b"/>
+      <!-- face -->
+      <path d="M190 250 C188 170 230 128 300 126 C370 128 412 170 410 250 C410 322 392 370 356 398 C336 413 318 420 300 420 C282 420 264 413 244 398 C208 370 190 322 190 250 Z" fill="#d09470"/>
+      <g clip-path="url(#faceClip)">
+        <!-- side shading -->
+        <path d="M190 180 C205 260 215 340 270 420 L180 440 Z" fill="#b87a56" opacity="0.45"/>
+        <path d="M410 180 C398 260 390 340 335 420 L420 440 Z" fill="#b87a56" opacity="0.35"/>
+        <!-- stubble / light beard -->
+        <path d="M192 290 C200 360 240 412 300 422 C360 412 400 360 408 290 L396 292 C390 330 372 352 352 350 C338 334 262 334 248 350 C228 352 210 330 204 292 Z" fill="#3a2a22" opacity="0.17"/>
+        <path d="M252 340 C268 322 290 326 300 330 C310 326 332 322 348 340 C335 336 318 334 300 338 C282 334 265 336 252 340 Z" fill="#2a1e18" opacity="0.28"/>
+        <path d="M262 375 C280 395 320 395 338 375 C330 400 312 410 300 410 C288 410 270 400 262 375 Z" fill="#2a1e18" opacity="0.12"/>
+        <!-- cheeks -->
+        <ellipse cx="238" cy="318" rx="26" ry="14" fill="#e0876a" opacity="0.28"/>
+        <ellipse cx="362" cy="318" rx="26" ry="14" fill="#e0876a" opacity="0.28"/>
+      </g>
+      <!-- hair: short, dark, curly on top, slicked back, slightly receding temples -->
+      <clipPath id="hairClip"><path id="hairShape" d="M188 262 C178 196 190 138 232 108 C262 88 338 88 368 108 C410 138 422 196 412 262 L404 262 C402 232 398 210 390 196 C382 184 372 176 360 170 C338 160 262 160 240 170 C228 176 218 184 210 196 C202 210 198 232 196 262 Z"/></clipPath>
+      <use href="#hairShape" fill="#1d1511"/>
+      <g id="curls" clip-path="url(#hairClip)" fill="none" stroke="#3b2b22" stroke-width="4" stroke-linecap="round" opacity="0.9"></g>
+      <!-- brows -->
+      <path id="browL" d="M230 222 C245 210 268 208 286 214" fill="none" stroke="#1d1511" stroke-width="10" stroke-linecap="round"/>
+      <path id="browR" d="M314 214 C332 208 355 210 370 222" fill="none" stroke="#1d1511" stroke-width="10" stroke-linecap="round"/>
+      <!-- eyes -->
+      <g id="eyeL">
+        <g id="eyeLOpen">
+          <path d="M242 252 C250 240 274 240 282 252 C274 262 250 262 242 252 Z" fill="#ffffff"/>
+          <circle cx="262" cy="251" r="8.5" fill="#3b2416"/>
+          <circle cx="262" cy="251" r="4" fill="#120b07"/>
+          <circle cx="265" cy="248" r="2.4" fill="#ffffff"/>
+          <path d="M240 252 C250 238 274 238 284 252" fill="none" stroke="#2a1b14" stroke-width="3.5" stroke-linecap="round"/>
+          <path d="M246 262 C256 268 270 268 280 262" fill="none" stroke="#a86d4b" stroke-width="2.5" stroke-linecap="round"/>
+        </g>
+        <path id="eyeLClosed" d="M242 254 C252 244 272 244 282 254" fill="none" stroke="#2a1b14" stroke-width="4.5" stroke-linecap="round" opacity="0"/>
+      </g>
+      <g id="eyeR">
+        <g id="eyeROpen">
+          <path d="M318 252 C326 240 350 240 358 252 C350 262 326 262 318 252 Z" fill="#ffffff"/>
+          <circle cx="338" cy="251" r="8.5" fill="#3b2416"/>
+          <circle cx="338" cy="251" r="4" fill="#120b07"/>
+          <circle cx="341" cy="248" r="2.4" fill="#ffffff"/>
+          <path d="M316 252 C326 238 350 238 360 252" fill="none" stroke="#2a1b14" stroke-width="3.5" stroke-linecap="round"/>
+          <path d="M320 262 C330 268 344 268 354 262" fill="none" stroke="#a86d4b" stroke-width="2.5" stroke-linecap="round"/>
+        </g>
+        <path id="eyeRClosed" d="M318 254 C328 244 348 244 358 254" fill="none" stroke="#2a1b14" stroke-width="4.5" stroke-linecap="round" opacity="0"/>
+      </g>
+      <!-- nose -->
+      <path d="M303 262 C304 285 312 300 316 312 C312 322 302 324 296 320" fill="none" stroke="#a86d4b" stroke-width="4" stroke-linecap="round"/>
+      <path d="M284 314 C288 322 296 322 300 318" fill="none" stroke="#a86d4b" stroke-width="3.5" stroke-linecap="round"/>
+      <ellipse cx="306" cy="306" rx="8" ry="5" fill="#e3a984" opacity="0.6"/>
+      <!-- mouth -->
+      <g id="mouthG">
+        <path id="mouthFill" d="" fill="#6b2020"/>
+        <g clip-path="url(#mouthClip)">
+          <ellipse id="tongue" cx="300" cy="380" rx="26" ry="12" fill="#d1606a"/>
+          <path id="teeth" d="" fill="#ffffff"/>
+        </g>
+        <path id="mouthLine" d="" fill="none" stroke="#6e3524" stroke-width="3" stroke-linecap="round"/>
+      </g>
+      <!-- smile lines -->
+      <path d="M244 330 C236 345 240 362 250 372" fill="none" stroke="#a86d4b" stroke-width="3" stroke-linecap="round" opacity="0.7"/>
+      <path d="M356 330 C364 345 360 362 350 372" fill="none" stroke="#a86d4b" stroke-width="3" stroke-linecap="round" opacity="0.7"/>
+      <!-- rimless glasses -->
+      <g id="glasses">
+        <rect x="220" y="230" width="76" height="46" rx="14" fill="#e8f2ff" fill-opacity="0.16" stroke="#dfe6ee" stroke-width="2.2" stroke-opacity="0.85"/>
+        <rect x="304" y="230" width="76" height="46" rx="14" fill="#e8f2ff" fill-opacity="0.16" stroke="#dfe6ee" stroke-width="2.2" stroke-opacity="0.85"/>
+        <path d="M228 238 L244 234" stroke="#ffffff" stroke-width="3" stroke-linecap="round" opacity="0.55"/>
+        <path d="M312 238 L328 234" stroke="#ffffff" stroke-width="3" stroke-linecap="round" opacity="0.55"/>
+        <path d="M294 242 C297 236 303 236 306 242" fill="none" stroke="#9aa4b0" stroke-width="4" stroke-linecap="round"/>
+        <path d="M222 240 L194 244" stroke="#9aa4b0" stroke-width="4" stroke-linecap="round"/>
+        <path d="M378 240 L406 244" stroke="#9aa4b0" stroke-width="4" stroke-linecap="round"/>
+        <circle cx="221" cy="240" r="3.5" fill="#9aa4b0"/><circle cx="379" cy="240" r="3.5" fill="#9aa4b0"/>
+      </g>
+    </g>
+
+    <!-- salad bowl (scene 4) -->
+    <g id="bowlGroup">
+      <g id="veggies"></g>
+      <path d="M90 640 L510 640 C505 760 420 820 300 820 C180 820 95 760 90 640 Z" fill="url(#bowlG)" stroke="#b8cad6" stroke-width="3"/>
+      <path d="M90 640 L510 640" stroke="#9fb4c2" stroke-width="6" stroke-linecap="round"/>
+      <path d="M130 700 C170 760 230 785 300 790" fill="none" stroke="#19c3a6" stroke-width="8" stroke-linecap="round" opacity="0.8"/>
+    </g>
+
+    <!-- arms -->
+    <g id="armL">
+      <path id="armLPath" d="" fill="none" stroke="#0c1222" stroke-width="72" stroke-linecap="round" stroke-linejoin="round"/>
+      <path id="armLPath2" d="" fill="none" stroke="#1c2640" stroke-width="64" stroke-linecap="round" stroke-linejoin="round"/>
+      <g id="forkL"><path d="M0 0 L0 -130" stroke="#aab4bf" stroke-width="8" stroke-linecap="round"/>
+        <path d="M-14 -130 L-14 -165 M0 -130 L0 -168 M14 -130 L14 -165 M-14 -130 L14 -130" stroke="#aab4bf" stroke-width="6" stroke-linecap="round"/>
+        <path d="M-8 -150 C-40 -175 -20 -215 10 -210 C35 -190 25 -160 -8 -150 Z" fill="#6fbf3a" stroke="#3f8f22" stroke-width="3"/>
+      </g>
+      <g id="handL"><rect x="-26" y="-10" width="52" height="20" rx="6" fill="#f7f8fb"/><circle r="27" cy="-24" fill="#d09470" id="handLC"/></g>
+    </g>
+    <g id="armR">
+      <path id="armRPath" d="" fill="none" stroke="#0c1222" stroke-width="72" stroke-linecap="round" stroke-linejoin="round"/>
+      <path id="armRPath2" d="" fill="none" stroke="#1c2640" stroke-width="64" stroke-linecap="round" stroke-linejoin="round"/>
+      <g id="handR">
+        <rect x="-26" y="-10" width="52" height="20" rx="6" fill="#f7f8fb"/>
+        <circle r="27" cy="-24" fill="#d09470"/>
+        <rect id="thumbR" x="-9" y="-78" width="18" height="40" rx="9" fill="#d09470" stroke="#a86d4b" stroke-width="2"/>
+      </g>
+    </g>
+  </g>
+
+  <!-- ============ FOREGROUND / TEXT ============ -->
+  <g id="textS1">
+    <g id="t1meet"><text x="170" y="380" font-size="44" font-weight="700" fill="#19c3a6" letter-spacing="10">MEET</text></g>
+    <g id="t1name"><text x="160" y="540" font-size="170" font-weight="800" fill="#ffffff" letter-spacing="4">AHMED</text></g>
+    <rect id="t1bar" x="170" y="575" width="0" height="10" rx="5" fill="#19c3a6"/>
+    <g id="t1role"><text x="170" y="660" font-size="50" font-weight="700" fill="#ffffff">Chief Technology Officer</text></g>
+    <g id="t1co">
+      <rect x="170" y="700" width="290" height="84" rx="42" fill="#ffffff"/>
+      <use href="#logoMark" x="188" y="712" width="60" height="60" color="#0d1f45"/>
+      <text x="258" y="757" font-size="36" font-weight="800" fill="#0d1f45">Mara7el</text>
+    </g>
+  </g>
+  <g id="textS3">
+    <g id="loveTag" filter="url(#softShadow)">
+      <rect x="-230" y="-60" width="460" height="120" rx="60" fill="#ffffff"/>
+      <use href="#heart" x="-195" y="-32" width="72" height="64" fill="#e2456b"/>
+      <text x="30" y="20" text-anchor="middle" font-size="56" font-weight="800" fill="#e2456b">Loves it!</text>
+    </g>
+  </g>
+  <g id="textS4">
+    <g id="t4a"><text x="140" y="250" font-size="44" font-weight="700" fill="#3f8f22" letter-spacing="8">SECRET FUEL</text></g>
+    <g id="t4b"><text x="130" y="360" font-size="120" font-weight="800" fill="#1e4d12">Fresh</text></g>
+    <g id="t4c"><text x="130" y="480" font-size="120" font-weight="800" fill="#1e4d12">Salad</text></g>
+    <g id="t4d"><g filter="url(#softShadow)"><circle cx="1500" cy="300" r="95" fill="#ff6b6b"/><circle cx="1500" cy="300" r="80" fill="none" stroke="#fff" stroke-width="3" stroke-dasharray="6 8"/><text x="1500" y="298" font-size="46" font-weight="800" fill="#ffffff" text-anchor="middle">100%</text><text x="1500" y="340" font-size="28" font-weight="700" fill="#ffffff" text-anchor="middle">GREEN</text></g></g>
+  </g>
+  <g id="textS5">
+    <g id="t5a"><text x="160" y="400" font-size="104" font-weight="800" fill="#ffffff">Built to lead.</text></g>
+    <g id="t5b"><text x="160" y="530" font-size="104" font-weight="800" fill="#8bd346">Powered by</text></g>
+    <g id="t5c"><text x="160" y="650" font-size="104" font-weight="800" fill="#8bd346">greens.</text></g>
+    <g id="t5logo">
+      <rect x="160" y="720" width="520" height="110" rx="55" fill="#ffffff"/>
+      <use href="#logoMark" x="182" y="735" width="80" height="80" color="#0d1f45"/>
+      <text x="278" y="790" font-size="42" font-weight="800" fill="#0d1f45">Mara7el</text>
+      <text x="475" y="789" font-size="26" font-weight="500" fill="#4a5a7a">Ahmed · CTO</text>
+    </g>
+  </g>
+
+  <g id="confetti"></g>
+
+  <!-- caption -->
+  <g id="caption" opacity="0">
+    <rect id="capBg" x="0" y="952" width="100" height="76" rx="38" fill="#08112a" fill-opacity="0.78"/>
+    <text id="capText" x="960" y="1003" text-anchor="middle" font-size="38" font-weight="600" fill="#ffffff"></text>
+  </g>
+
+  <!-- transition wipe -->
+  <g id="wipe">
+    <rect id="wipe1" x="-4000" y="-300" width="3000" height="1680" fill="#19c3a6" transform="skewX(-18)"/>
+    <rect id="wipe2" x="-4000" y="-300" width="3000" height="1680" fill="#8bd346" transform="skewX(-18)"/>
+  </g>
+</svg>
+
+<script>
+const NS = 'http://www.w3.org/2000/svg';
+const $ = id => document.getElementById(id);
+const el = (tag, attrs, parent) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (parent) parent.appendChild(e); return e; };
+const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
+const lerp = (a, b, x) => a + (b - a) * x;
+const P = (t, a, b) => clamp((t - a) / (b - a));
+const eOut = x => 1 - Math.pow(1 - x, 3);
+const eInOut = x => x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+const eBack = x => { const c1 = 1.9, c3 = c1 + 1; return 1 + c3 * Math.pow(x - 1, 3) + c1 * Math.pow(x - 1, 2); };
+const eElastic = x => x === 0 || x === 1 ? x : Math.pow(2, -10 * x) * Math.sin((x * 10 - 0.75) * (2 * Math.PI) / 3) + 1;
+// deterministic pseudo random
+let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+
+// Scene boundaries (seconds)
+const B = [0, 3.0, 6.6, 8.9, 12.4, 15.0];
+const sceneAt = t => { for (let i = B.length - 2; i >= 0; i--) if (t >= B[i]) return i; return 0; };
+
+// Voice-over timing, injected by the renderer
+window.VO = window.VO || [
+  { start: 0.35, end: 2.6, text: 'Meet Ahmed, CTO of Mara7el.' },
+  { start: 3.15, end: 6.3, text: 'He builds the technology that moves the company forward,' },
+  { start: 6.75, end: 8.5, text: 'and he loves every minute of it.' },
+  { start: 9.05, end: 11.9, text: 'His secret fuel? A fresh, crunchy salad.' },
+  { start: 12.55, end: 14.7, text: 'Built to lead. Powered by greens.' },
+];
+
+// ---------- static decoration ----------
+for (const id of ['dots1', 'dots5']) {
+  const g = $(id);
+  for (let y = 60; y < 1080; y += 60) for (let x = 60; x < 900; x += 60) el('circle', { cx: x, cy: y, r: 2.5, fill: '#fff' }, g);
+}
+for (let x = 0; x <= 1920; x += 80) el('line', { x1: x, y1: 0, x2: x, y2: 1080 }, $('grid2'));
+for (let y = 0; y <= 1080; y += 80) el('line', { x1: 0, y1: y, x2: 1920, y2: y }, $('grid2'));
+for (let i = 0; i < 12; i++) {
+  const a = i / 12 * Math.PI * 2, a2 = a + Math.PI / 24;
+  el('path', { d: `M960 540 L${960 + Math.cos(a) * 1800} ${540 + Math.sin(a) * 1800} L${960 + Math.cos(a2) * 1800} ${540 + Math.sin(a2) * 1800} Z` }, $('rays3'));
+}
+// curls on top of hair
+(() => {
+  const g = $('curls'); seed = 3;
+  for (let row = 0; row < 5; row++) {
+    const y = 108 + row * 13, half = 80 + row * 14;
+    for (let x = 300 - half; x <= 300 + half; x += 17) {
+      const jx = x + (rnd() - 0.5) * 6, jy = y + (rnd() - 0.5) * 5;
+      el('path', { d: `M${jx - 7} ${jy + 3} C${jx - 5} ${jy - 7} ${jx + 5} ${jy - 7} ${jx + 7} ${jy + 1}` }, g);
+    }
+  }
+})();
+// gear shape
+(() => {
+  let d = ''; const n = 10, r1 = 70, r2 = 90;
+  for (let i = 0; i < n * 2; i++) {
+    const a0 = i / (n * 2) * Math.PI * 2, a1 = (i + 1) / (n * 2) * Math.PI * 2, r = i % 2 ? r1 : r2;
+    d += (i ? 'L' : 'M') + (Math.cos(a0) * r).toFixed(1) + ' ' + (Math.sin(a0) * r).toFixed(1) + ' L' + (Math.cos(a1) * r).toFixed(1) + ' ' + (Math.sin(a1) * r).toFixed(1) + ' ';
+  }
+  $('gearPath').setAttribute('d', d + 'Z');
+})();
+// code lines
+const codeLines = [];
+(() => {
+  const cols = ['#19c3a6', '#7fb3ff', '#ffc857', '#ff8fa3', '#c3a6ff', '#7fb3ff', '#19c3a6', '#ffc857'];
+  const ws = [220, 330, 170, 290, 380, 240, 310, 150];
+  const ind = [0, 30, 30, 60, 60, 30, 0, 0];
+  seed = 11;
+  for (let i = 0; i < 8; i++) {
+    const r = el('rect', { x: 30 + ind[i], y: 72 + i * 27, width: 0, height: 13, rx: 6.5, fill: cols[i] }, $('codeLines'));
+    codeLines.push({ r, w: ws[i] - ind[i] });
+  }
+})();
+// bars
+const bars = [];
+(() => {
+  const hs = [60, 95, 80, 130, 165];
+  for (let i = 0; i < 5; i++) {
+    const r = el('rect', { x: 34 + i * 62, y: 240, width: 42, height: 0, rx: 8, fill: i === 4 ? '#19c3a6' : '#7fb3ff' }, $('bars'));
+    bars.push({ r, h: hs[i] });
+  }
+})();
+// hearts
+const hearts = [];
+(() => {
+  seed = 5;
+  for (let i = 0; i < 14; i++) {
+    const u = el('use', { href: '#heart', width: 60, height: 54, fill: i % 3 ? '#ffffff' : '#ffd1dc' }, $('hearts3'));
+    hearts.push({ u, x: 120 + rnd() * 1680, d: rnd() * 1.4, s: 0.6 + rnd() * 1.1, sp: 260 + rnd() * 240, w: rnd() * 6 });
+  }
+})();
+// confetti (scene 3 burst)
+const conf = [];
+(() => {
+  seed = 21; const cols = ['#ffc857', '#19c3a6', '#ffffff', '#8bd346', '#7fb3ff'];
+  for (let i = 0; i < 70; i++) {
+    const r = el('rect', { width: 14, height: 24, rx: 3, fill: cols[i % 5] }, $('confetti'));
+    const a = -Math.PI / 2 + (rnd() - 0.5) * 2.4;
+    conf.push({ r, vx: Math.cos(a) * (500 + rnd() * 700), vy: Math.sin(a) * (700 + rnd() * 700), rot: rnd() * 720 - 360 });
+  }
+})();
+// falling leaves (scene 4 background)
+const leaves = [];
+(() => {
+  seed = 33;
+  for (let i = 0; i < 12; i++) {
+    const p = el('path', { d: 'M0 0 C-22 -18 -12 -48 10 -46 C28 -30 22 -8 0 0 Z', fill: i % 2 ? '#6fbf3a' : '#93d65a', opacity: 0.8 }, $('leaves4'));
+    leaves.push({ p, x: rnd() * 1920, d: rnd() * 3, s: 0.8 + rnd() * 1.2, sp: 120 + rnd() * 160, r: rnd() * 360 });
+  }
+})();
+// veggies into the bowl (character coords)
+const veg = [];
+(() => {
+  const g = $('veggies'); seed = 9;
+  const mk = (type, x, y, delay) => {
+    const grp = el('g', {}, g);
+    if (type === 'lettuce') { el('path', { d: 'M-50 10 C-60 -30 -20 -55 0 -40 C20 -60 60 -35 50 10 Z', fill: '#6fbf3a', stroke: '#3f8f22', 'stroke-width': 3 }, grp); el('path', { d: 'M0 -38 L0 8', stroke: '#b9e58f', 'stroke-width': 4 }, grp); }
+    if (type === 'tomato') { el('circle', { r: 30, fill: '#ff5a4e' }, grp); el('path', { d: 'M-12 -26 L0 -18 L12 -26 L4 -30 L0 -38 L-4 -30 Z', fill: '#3f8f22' }, grp); el('ellipse', { cx: -10, cy: -8, rx: 8, ry: 5, fill: '#fff', opacity: 0.5 }, grp); }
+    if (type === 'cucumber') { el('circle', { r: 26, fill: '#2f7d32' }, grp); el('circle', { r: 21, fill: '#c9ef9f' }, grp); for (let k = 0; k < 6; k++) el('circle', { cx: Math.cos(k) * 10, cy: Math.sin(k) * 10, r: 2.5, fill: '#8cc56a' }, grp); }
+    if (type === 'carrot') { el('path', { d: 'M-40 -8 L40 -14 L44 0 L40 14 L-40 8 Z', fill: '#ff9f1c' }, grp); }
+    if (type === 'olive') { el('ellipse', { rx: 16, ry: 12, fill: '#3b2e4a' }, grp); el('circle', { r: 5, fill: '#ff6b6b' }, grp); }
+    veg.push({ grp, x, y, delay, rot: (rnd() - 0.5) * 60 });
+  };
+  mk('lettuce', 180, 640, 0.1); mk('lettuce', 410, 640, 0.16); mk('lettuce', 300, 625, 0.22);
+  mk('tomato', 230, 612, 0.28); mk('cucumber', 360, 612, 0.34); mk('carrot', 290, 600, 0.4);
+  mk('tomato', 440, 620, 0.46); mk('olive', 150, 625, 0.5); mk('cucumber', 260, 595, 0.55); mk('olive', 340, 590, 0.6);
+})();
+
+// ---------- character rig ----------
+function ik(sx, sy, tx, ty, L1, L2, bend) {
+  let dx = tx - sx, dy = ty - sy; let d = Math.hypot(dx, dy);
+  const dm = Math.min(d, L1 + L2 - 0.01); if (d > dm) { tx = sx + dx / d * dm; ty = sy + dy / d * dm; d = dm; }
+  const a = Math.atan2(ty - sy, tx - sx);
+  const cosB = clamp((L1 * L1 + d * d - L2 * L2) / (2 * L1 * d), -1, 1);
+  const b = Math.acos(cosB) * bend;
+  return { ex: sx + Math.cos(a + b) * L1, ey: sy + Math.sin(a + b) * L1, hx: tx, hy: ty };
+}
+function setArm(side, tx, ty, bend, handRot) {
+  const sx = side === 'L' ? 122 : 478, sy = 505;
+  const j = ik(sx, sy, tx, ty, 145, 140, bend);
+  const d = `M${sx} ${sy} L${j.ex.toFixed(1)} ${j.ey.toFixed(1)} L${j.hx.toFixed(1)} ${j.hy.toFixed(1)}`;
+  $('arm' + side + 'Path').setAttribute('d', d);
+  $('arm' + side + 'Path2').setAttribute('d', d);
+  // hand oriented along forearm
+  const fa = Math.atan2(j.hy - j.ey, j.hx - j.ex) * 180 / Math.PI + 90;
+  const rot = handRot === undefined ? fa : handRot;
+  $('hand' + side).setAttribute('transform', `translate(${j.hx.toFixed(1)} ${j.hy.toFixed(1)}) rotate(${rot.toFixed(1)})`);
+  return j;
+}
+function setMouth(open, smile) {
+  const cy = 350 - smile * 6, lx = 258 - smile * 4, rx = 342 + smile * 4;
+  const upper = 352 + smile * 4;
+  const lower = 360 + smile * 10 + open * 34;
+  const d = `M${lx} ${cy} Q300 ${upper} ${rx} ${cy} Q300 ${lower} ${lx} ${cy} Z`;
+  $('mouthFill').setAttribute('d', d);
+  $('mouthClipPath').setAttribute('d', d);
+  $('teeth').setAttribute('d', `M${lx} ${cy} Q300 ${upper} ${rx} ${cy} L${rx} ${cy + 4} Q300 ${upper + 14 + open * 2} ${lx} ${cy + 4} Z`);
+  $('tongue').setAttribute('cy', lower - 6);
+  $('mouthLine').setAttribute('d', `M${lx - 6} ${cy - 3} Q${lx - 2} ${cy + 1} ${lx + 2} ${cy + 1} M${rx + 6} ${cy - 3} Q${rx + 2} ${cy + 1} ${rx - 2} ${cy + 1}`);
+}
+function setEye(side, openness, happy) {
+  // openness 1 = open, 0 = closed
+  const cx = side === 'L' ? 262 : 338;
+  const s = Math.max(0.05, openness);
+  $('eye' + side + 'Open').setAttribute('transform', `translate(0 251) scale(1 ${s.toFixed(3)}) translate(0 -251)`);
+  $('eye' + side + 'Open').setAttribute('opacity', openness < 0.25 ? 0 : 1);
+  const closed = $('eye' + side + 'Closed');
+  closed.setAttribute('opacity', openness < 0.25 ? 1 : 0);
+  closed.setAttribute('d', happy
+    ? `M${cx - 20} 256 C${cx - 10} 242 ${cx + 10} 242 ${cx + 20} 256`
+    : `M${cx - 20} 252 C${cx - 10} 258 ${cx + 10} 258 ${cx + 20} 252`);
+}
+function blinkAt(t, times) {
+  let o = 1;
+  for (const b of times) { const x = (t - b) / 0.16; if (x > 0 && x < 1) o = Math.min(o, Math.abs(x * 2 - 1)); }
+  return o;
+}
+
+// ---------- helpers for text reveals ----------
+function reveal(id, t, t0, dur = 0.45, dy = 50) {
+  const x = eOut(P(t, t0, t0 + dur));
+  const g = $(id); g.setAttribute('opacity', x); g.setAttribute('transform', `translate(0 ${((1 - x) * dy).toFixed(1)})`);
+}
+function pop(id, t, t0, cx, cy, dur = 0.5, extra = '') {
+  const x = P(t, t0, t0 + dur), s = x <= 0 ? 0.001 : eBack(x);
+  const g = $(id); g.setAttribute('opacity', x > 0 ? 1 : 0);
+  g.setAttribute('transform', `translate(${cx} ${cy}) scale(${s.toFixed(4)}) ${extra}`);
+}
+const show = (id, v) => $(id).setAttribute('display', v ? 'inline' : 'none');
+
+// ---------- main render ----------
+window.renderFrame = function (t) {
+  const sc = sceneAt(t);
+  ['bgS1', 'bgS2', 'bgS3', 'bgS4', 'bgS5'].forEach((id, i) => show(id, i === sc));
+  show('propsS2', sc === 1); show('propsS3', sc === 2);
+  show('textS1', sc === 0); show('textS3', sc === 2); show('textS4', sc === 3); show('textS5', sc === 4);
+  show('bowlGroup', sc === 3); show('forkL', sc === 3); show('confetti', sc === 2);
+  show('thumbR', false);
+
+  const lt = t - B[sc]; // local time
+  // defaults
+  let cx = 660, cy = 230, cs = 1.0, headRot = Math.sin(t * 1.7) * 2, headDy = 0;
+  let mouthOpen = 0.22, smile = 0.8, eyeL = blinkAt(t, [2.3, 5.2, 10.1, 14.5]), eyeR = eyeL, happy = false;
+  let browLift = 0;
+  const breathe = Math.sin(t * 2.6) * 4;
+  // arm default: relaxed at sides
+  let aL = [110, 790, 1], aR = [490, 790, -1];
+
+  if (sc === 0) {
+    // intro: slide up on the right, wave
+    const up = eOut(P(t, 0.05, 0.8));
+    cx = 1150; cy = lerp(1150, 180, up); cs = 1.05;
+    const c = eBack(P(t, 0.0, 0.6));
+    $('s1circle').setAttribute('r', (360 * c).toFixed(1));
+    $('s1ring').setAttribute('transform', `rotate(${t * 20} 1450 520)`);
+    $('s1ring2').setAttribute('transform', `rotate(${-t * 12} 1450 520)`);
+    $('s1ring').setAttribute('opacity', 0.6 * P(t, 0.3, 0.8));
+    // wave with his left hand (viewer's right)
+    const w = P(t, 0.7, 1.0);
+    const wave = Math.sin((t - 0.7) * 13) * 30 * P(t, 0.8, 1.0) * (1 - P(t, 2.4, 2.8));
+    const down = P(t, 2.4, 2.8);
+    aR = [lerp(490, lerp(590, 490, down), eOut(w)) + wave, lerp(790, lerp(300, 790, eInOut(down)), eOut(w)), 1];
+    reveal('t1meet', t, 0.35, 0.4, 30);
+    reveal('t1name', t, 0.5, 0.5, 80);
+    $('t1bar').setAttribute('width', (eOut(P(t, 0.8, 1.3)) * 420).toFixed(1));
+    reveal('t1role', t, 0.95, 0.45, 40);
+    reveal('t1co', t, 1.2, 0.45, 40);
+    headRot = Math.sin(t * 3) * 3;
+  }
+  if (sc === 1) {
+    cx = 660; cy = 230 + (1 - eOut(P(lt, 0, 0.4))) * 60;
+    // presenting gesture: both hands open out
+    const g = eOut(P(lt, 0.2, 0.7));
+    aL = [lerp(110, -10, g), lerp(790, 700, g), -1];
+    aR = [lerp(490, 610, g), lerp(790, 700, g), 1];
+    pop('codeCard', t, 3.2, 150, 170, 0.5);
+    pop('cloudCard', t, 3.45, 1420, 150, 0.5);
+    pop('dashCard', t, 3.7, 1400, 560, 0.5);
+    pop('gear', t, 3.9, 330, 800, 0.5, `rotate(${(t * 90).toFixed(1)})`);
+    codeLines.forEach((c, i) => c.r.setAttribute('width', (eOut(P(t, 3.5 + i * 0.18, 3.8 + i * 0.18)) * c.w).toFixed(1)));
+    bars.forEach((b, i) => { const h = eBack(P(t, 3.9 + i * 0.12, 4.4 + i * 0.12)) * b.h; b.r.setAttribute('height', Math.max(0, h).toFixed(1)); b.r.setAttribute('y', (240 - Math.max(0, h)).toFixed(1)); });
+    $('kpi').textContent = '+' + Math.round(eOut(P(t, 3.9, 5.2)) * 240) + '%';
+    const ca = (lt * 1.6) % 1; $('cloudArrow').setAttribute('transform', `translate(0 ${(-ca * 24).toFixed(1)})`); $('cloudArrow').setAttribute('opacity', (1 - ca * 0.8).toFixed(2));
+    const pr = lt / 3.6, pulse = (lt * 0.9) % 1;
+    $('s2pulse').setAttribute('r', (330 + pulse * 220).toFixed(1)); $('s2pulse').setAttribute('opacity', (1 - pulse) * 0.7);
+    // rocket across the sky
+    const rp = eInOut(P(t, 4.0, 6.4));
+    const rx = lerp(-100, 2000, rp), ry = lerp(980, -120, rp) - Math.sin(rp * Math.PI) * 120;
+    const rx2 = lerp(-100, 2000, rp + 0.01), ry2 = lerp(980, -120, rp + 0.01) - Math.sin((rp + 0.01) * Math.PI) * 120;
+    const ang = Math.atan2(ry2 - ry, rx2 - rx) * 180 / Math.PI + 90;
+    $('rocketBody').setAttribute('transform', `translate(${rx.toFixed(1)} ${ry.toFixed(1)}) rotate(${ang.toFixed(1)}) scale(1.3)`);
+    $('flame').setAttribute('d', `M-12 32 Q0 ${70 + Math.sin(t * 40) * 14} 12 32 Z`);
+    let trail = '';
+    for (let k = 0; k <= 30; k++) { const q = Math.max(0, rp - 0.25 + k / 30 * 0.25); const x = lerp(-100, 2000, q), y = lerp(980, -120, q) - Math.sin(q * Math.PI) * 120; trail += (k ? 'L' : 'M') + x.toFixed(1) + ' ' + y.toFixed(1); }
+    $('rocketTrail').setAttribute('d', rp > 0 ? trail : '');
+    headRot = Math.sin(t * 2.2) * 4;
+    browLift = 3;
+  }
+  if (sc === 2) {
+    cx = 660; cy = 230; cs = 1.0;
+    happy = true;
+    const hj = eOut(P(lt, 0.05, 0.35));
+    eyeL = eyeR = lt > 0.25 && lt < 1.8 ? 0 : 1;
+    mouthOpen = 0.55; smile = 1;
+    headDy = -Math.abs(Math.sin(lt * 7)) * 10 * (1 - P(lt, 1.6, 2.2));
+    // thumbs up with his left hand (viewer's right), other hand on hip
+    show('thumbR', true);
+    aR = [lerp(490, 600, hj), lerp(790, 400, hj) + Math.sin(lt * 8) * 8, 1];
+    aL = [lerp(110, 150, hj), lerp(790, 720, hj), 1];
+    // chart draws
+    const cl = $('chartLine'), len = 2200;
+    cl.setAttribute('stroke-dasharray', len); cl.setAttribute('stroke-dashoffset', ((1 - eOut(P(lt, 0, 1.2))) * len).toFixed(1));
+    const ap = eOut(P(lt, 1.0, 1.3));
+    $('chartArrow').setAttribute('transform', `translate(1780 180) rotate(-34) scale(${ap.toFixed(3)})`);
+    $('rays3').setAttribute('transform', `rotate(${lt * 12} 960 540)`);
+    hearts.forEach(h => {
+      const q = lt - h.d; const y = 1150 - q * h.sp;
+      h.u.setAttribute('x', (h.x + Math.sin(q * 3 + h.w) * 30 - 30 * h.s).toFixed(1));
+      h.u.setAttribute('y', y.toFixed(1)); h.u.setAttribute('opacity', q > 0 ? 0.85 : 0);
+      h.u.setAttribute('width', 60 * h.s); h.u.setAttribute('height', 54 * h.s);
+    });
+    // confetti burst from the top of the character
+    conf.forEach(c => {
+      const q = lt - 0.15; if (q < 0) { c.r.setAttribute('opacity', 0); return; }
+      const x = 960 + c.vx * q, y = 380 + c.vy * q + 900 * q * q;
+      c.r.setAttribute('opacity', 1 - P(q, 1.5, 2.1));
+      c.r.setAttribute('transform', `translate(${x.toFixed(1)} ${y.toFixed(1)}) rotate(${(c.rot * q).toFixed(1)})`);
+    });
+    pop('loveTag', t, 6.95, 1480, 820, 0.55, `rotate(${(Math.sin(lt * 5) * 4).toFixed(2)})`);
+  }
+  if (sc === 3) {
+    cx = 660; cy = 170; cs = 1.0;
+    // veggies drop into the bowl
+    veg.forEach(v => {
+      const q = P(lt, v.delay, v.delay + 0.4);
+      const y = lerp(v.y - 700, v.y, eOut(q)) - (q >= 1 ? 0 : 0) ;
+      const b = q >= 1 ? Math.abs(Math.sin((lt - v.delay - 0.4) * 9)) * 14 * Math.max(0, 1 - (lt - v.delay - 0.4) * 2.2) : 0;
+      v.grp.setAttribute('transform', `translate(${v.x} ${(y - b).toFixed(1)}) rotate(${(v.rot * (1 - q) + Math.sin(lt * 3 + v.x) * 4).toFixed(1)})`);
+      v.grp.setAttribute('opacity', lt > v.delay ? 1 : 0);
+    });
+    // bowl bounce in
+    const bb = eBack(P(lt, 0, 0.45));
+    $('bowlGroup').setAttribute('transform', `translate(300 720) scale(${Math.max(0.001, bb).toFixed(3)}) translate(-300 -720)`);
+    // fork: from bowl to mouth twice
+    const bite = (a, b) => eInOut(P(lt, a, a + 0.45)) * (1 - eInOut(P(lt, b, b + 0.45)));
+    const k = Math.max(bite(1.1, 1.9), bite(2.45, 3.2));
+    const hx = lerp(215, 250, k), hy = lerp(650, 540, k);
+    aL = [hx, hy, 1];
+    const fr = lerp(-10, 18, k);
+    $('forkL').setAttribute('transform', `translate(${hx} ${hy - 20}) rotate(${fr}) scale(${lerp(1, 0.95, k)})`);
+    // leaf disappears after each bite
+    // chewing
+    const chewing = (lt > 1.6 && lt < 2.45) || (lt > 2.95);
+    mouthOpen = k > 0.8 ? 0.7 : (chewing ? Math.abs(Math.sin(lt * 14)) * 0.15 : 0.25);
+    smile = chewing ? 0.6 : 0.9;
+    eyeL = eyeR = chewing ? 0 : blinkAt(t, [10.1]); happy = chewing;
+    aR = [500, 650, -1];
+    headRot = chewing ? Math.sin(lt * 7) * 3 : Math.sin(t * 2) * 2;
+    reveal('t4a', t, 9.0, 0.4, 30);
+    reveal('t4b', t, 9.15, 0.45, 60);
+    reveal('t4c', t, 9.3, 0.45, 60);
+    pop('t4d', t, 9.6, 1500, 300, 0.5, `rotate(${(Math.sin(lt * 4) * 6).toFixed(1)}) translate(-1500 -300)`);
+    $('s4ring').setAttribute('transform', `rotate(${lt * 18} 960 520)`);
+    leaves.forEach(l => {
+      const q = lt + l.d; const y = -80 + q * l.sp * 1.4;
+      l.p.setAttribute('transform', `translate(${(l.x + Math.sin(q * 2 + l.r) * 60).toFixed(1)} ${y.toFixed(1)}) rotate(${(l.r + q * 90).toFixed(1)}) scale(${l.s})`);
+    });
+  }
+  if (sc === 4) {
+    const up = eOut(P(lt, 0, 0.5));
+    cx = 1150; cy = lerp(260, 180, up); cs = 1.05;
+    $('s5circle').setAttribute('r', (360 * eBack(P(lt, 0, 0.55))).toFixed(1));
+    $('s5ring').setAttribute('transform', `rotate(${t * 20} 1450 520)`);
+    // wink at ~13.3s with his left eye (viewer's right)
+    const wk = P(t, 13.25, 13.4) * (1 - P(t, 13.8, 13.95));
+    eyeR = 1 - wk; eyeL = 1; happy = true;
+    browLift = wk * 6;
+    show('thumbR', true);
+    const th = eBack(P(lt, 0.2, 0.6));
+    aR = [lerp(490, 610, th), lerp(790, 400, th), 1];
+    mouthOpen = 0.35; smile = 1;
+    headRot = lerp(0, -6, eOut(P(t, 13.1, 13.4))) * (1 - P(t, 14.0, 14.4)) + Math.sin(t * 2) * 1.5;
+    reveal('t5a', t, 12.55, 0.45, 60);
+    reveal('t5b', t, 13.35, 0.45, 60);
+    reveal('t5c', t, 13.5, 0.45, 60);
+    reveal('t5logo', t, 13.9, 0.5, 40);
+  }
+
+  // apply character
+  $('char').setAttribute('transform', `translate(${cx.toFixed(1)} ${(cy + breathe).toFixed(1)}) scale(${cs})`);
+  $('head').setAttribute('transform', `translate(0 ${headDy.toFixed(1)}) rotate(${headRot.toFixed(2)} 300 400)`);
+  $('browL').setAttribute('transform', `translate(0 ${(-browLift * 0.4).toFixed(1)})`);
+  $('browR').setAttribute('transform', `translate(0 ${(-browLift).toFixed(1)})`);
+  setMouth(mouthOpen, smile);
+  setEye('L', eyeL, happy); setEye('R', eyeR, happy);
+  setArm('L', aL[0], aL[1], aL[2]);
+  const jr = setArm('R', aR[0], aR[1], aR[2], $('thumbR').getAttribute('display') === 'inline' ? 0 : undefined);
+
+  // captions
+  const cur = window.VO.find(v => t >= v.start - 0.1 && t <= v.end + 0.25);
+  const cap = $('caption');
+  if (cur) {
+    const txt = $('capText'); if (txt.textContent !== cur.text) txt.textContent = cur.text;
+    const w = txt.getComputedTextLength() + 80;
+    $('capBg').setAttribute('x', (960 - w / 2).toFixed(1)); $('capBg').setAttribute('width', w.toFixed(1));
+    const a = P(t, cur.start - 0.1, cur.start + 0.1) * (1 - P(t, cur.end + 0.05, cur.end + 0.25));
+    cap.setAttribute('opacity', a.toFixed(2));
+  } else cap.setAttribute('opacity', 0);
+
+  // transition wipes around each boundary
+  let wx = -4000;
+  for (let i = 1; i < B.length - 1; i++) {
+    const q = P(t, B[i] - 0.28, B[i] + 0.28);
+    if (q > 0 && q < 1) wx = lerp(-3600, 2600, eInOut(q));
+  }
+  $('wipe1').setAttribute('x', (wx).toFixed(1));
+  $('wipe2').setAttribute('x', (wx - 260).toFixed(1));
+  // fade out at the very end
+  document.getElementById('stage').style.opacity = 1 - P(t, 14.75, 15.0) * 0.0;
+};
+window.renderFrame(parseFloat(new URLSearchParams(location.search).get('t') || '1.6'));
+</script>
+</body>
+</html>
