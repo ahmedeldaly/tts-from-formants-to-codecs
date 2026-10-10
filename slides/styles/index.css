@@ -1,0 +1,56 @@
+:root {
+  --paper: #F6F4EF;
+  --ink: #151515;
+  --muted: #6E6A63;
+  --line: #D9D5CC;
+  --accent: #E2552B;
+}
+
+.slidev-layout {
+  background: var(--paper);
+  color: var(--ink);
+  padding: 56px 72px;
+}
+
+.slidev-layout h1 {
+  font-size: 56px;
+  line-height: 1.02;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  margin: 0;
+}
+
+/* ---------- SVG diagram primitives ---------- */
+.dg text { font-family: 'Inter', sans-serif; fill: var(--ink); }
+.dg .mono { text-transform: uppercase; font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 0.14em; fill: var(--muted); }
+.dg .title { font-size: 22px; font-weight: 700; letter-spacing: -0.01em; }
+.dg .sub { font-size: 14px; fill: var(--muted); }
+.dg .box { fill: var(--paper); stroke: var(--ink); stroke-width: 1.25; }
+.dg .box.ghost { stroke: var(--line); }
+.dg .wire { fill: none; stroke: var(--ink); stroke-width: 1.5; }
+.dg .wire.accent { stroke: var(--accent); }
+.dg .wire.soft { stroke: var(--muted); }
+.dg .dot { fill: var(--accent); }
+
+/* animated, directional dashes: flow moves along the path direction */
+.dg .flow { stroke-dasharray: 7 7; animation: dg-flow 0.9s linear infinite; }
+.dg .flow.slow { animation-duration: 1.6s; }
+@keyframes dg-flow { to { stroke-dashoffset: -14; } }
+
+/* progressive reveal driven by $clicks */
+.dg .rv {
+  opacity: 0;
+  transform: translateY(10px);
+  transform-box: fill-box;
+  transition: opacity 0.55s ease, transform 0.55s cubic-bezier(.2,.7,.2,1);
+}
+.dg .rv.on { opacity: 1; transform: none; }
+
+/* active node: accent indicator pulses once it is "hot" */
+.dg .pulse { animation: dg-pulse 1.8s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+@keyframes dg-pulse { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: .35; transform: scale(1.6); } }
+
+/* static PDF export: no motion needed, but keep revealed state */
+@media print {
+  .dg .flow, .dg .pulse { animation: none; }
+}

@@ -1,0 +1,16 @@
+{
+  "name": "api-architecture-slides",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "slidev --open",
+    "build": "slidev build",
+    "export": "slidev export --with-clicks --output dist/api-architecture.pdf",
+    "export:static": "slidev export --output dist/api-architecture-static.pdf"
+  },
+  "devDependencies": {
+    "@slidev/cli": "^53.0.0",
+    "@slidev/theme-default": "^0.25.0",
+    "playwright-chromium": "^1.64.0"
+  }
+}
