@@ -6,7 +6,8 @@ colorSchema: light
 aspectRatio: 16/9
 canvasWidth: 1280
 transition: fade
-download: true
+download: ./api-architecture.pdf
+routerMode: hash
 exportFilename: api-architecture
 fonts:
   sans: Inter

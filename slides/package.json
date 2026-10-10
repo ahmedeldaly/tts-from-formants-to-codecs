@@ -4,8 +4,9 @@
   "type": "module",
   "scripts": {
     "dev": "slidev --open",
-    "build": "slidev build",
+    "build": "slidev build --base ./",
     "export": "slidev export --with-clicks --output dist/api-architecture.pdf",
+    "export:public": "slidev export --with-clicks --output public/api-architecture.pdf",
     "export:static": "slidev export --output dist/api-architecture-static.pdf"
   },
   "devDependencies": {
